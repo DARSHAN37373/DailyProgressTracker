@@ -7,6 +7,7 @@ public class LoginResponseDTO {
     private String username;
     private String email;
     private String message;
+    private String token;
 
     public LoginResponseDTO() {
     }
@@ -50,4 +51,11 @@ public class LoginResponseDTO {
     public void setMessage(String message) {
         this.message = message;
     }
+    public String getToken() {
+    return token;
+}
+
+public void setToken(String token) {
+    this.token = token;
+}
 }
