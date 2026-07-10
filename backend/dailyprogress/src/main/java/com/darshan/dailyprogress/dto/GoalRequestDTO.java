@@ -1,34 +1,25 @@
-package com.darshan.dailyprogress.entity;
+package com.darshan.dailyprogress.dto;
 
-import jakarta.persistence.*;
+import com.darshan.dailyprogress.entity.GoalStatus;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "goals")
-public class Goal {
+public class GoalRequestDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @NotBlank(message = "Title is required")
     private String title;
 
     private String description;
 
+    @NotNull(message = "Target date is required")
     private LocalDate targetDate;
 
-    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Status is required")
     private GoalStatus status;
 
-    public Goal() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public GoalRequestDTO() {
     }
 
     public String getTitle() {
@@ -56,10 +47,10 @@ public class Goal {
     }
 
     public GoalStatus getStatus() {
-    return status;
-}
+        return status;
+    }
 
     public void setStatus(GoalStatus status) {
-    this.status = status;
-}
+        this.status = status;
+    }
 }

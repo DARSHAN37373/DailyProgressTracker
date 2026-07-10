@@ -1,26 +1,18 @@
-package com.darshan.dailyprogress.entity;
+package com.darshan.dailyprogress.dto;
 
-import jakarta.persistence.*;
+import com.darshan.dailyprogress.entity.GoalStatus;
+
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "goals")
-public class Goal {
+public class GoalResponseDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
-
     private String description;
-
     private LocalDate targetDate;
-
-    @Enumerated(EnumType.STRING)
     private GoalStatus status;
 
-    public Goal() {
+    public GoalResponseDTO() {
     }
 
     public Long getId() {
@@ -56,10 +48,10 @@ public class Goal {
     }
 
     public GoalStatus getStatus() {
-    return status;
-}
+        return status;
+    }
 
     public void setStatus(GoalStatus status) {
-    this.status = status;
-}
+        this.status = status;
+    }
 }
