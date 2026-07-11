@@ -9,71 +9,124 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.darshan.dailyprogress.entity.User;
+import com.darshan.dailyprogress.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 @Service
 public class GoalService {
 
     private final GoalRepository goalRepository;
 
-    public GoalService(GoalRepository goalRepository) {
-        this.goalRepository = goalRepository;
-    }
+    private final UserRepository userRepository;
 
+    public GoalService(GoalRepository goalRepository,
+                   UserRepository userRepository) {
+
+    this.goalRepository = goalRepository;
+    this.userRepository = userRepository;
+}
+
+    
     // Create Goal
-    public GoalResponseDTO createGoal(GoalRequestDTO request) {
+public GoalResponseDTO createGoal(GoalRequestDTO request) {
 
-        Goal goal = new Goal();
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
 
-        goal.setTitle(request.getTitle());
-        goal.setDescription(request.getDescription());
-        goal.setTargetDate(request.getTargetDate());
-        goal.setStatus(request.getStatus());
+    String email = authentication.getName();
 
-        Goal savedGoal = goalRepository.save(goal);
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return convertToResponseDTO(savedGoal);
-    }
+    Goal goal = new Goal();
+
+    
+    goal.setUser(user);
+    goal.setTitle(request.getTitle());
+    goal.setDescription(request.getDescription());
+    goal.setTargetDate(request.getTargetDate());
+    goal.setStatus(request.getStatus());
+
+    Goal savedGoal = goalRepository.save(goal);
+
+    return convertToResponseDTO(savedGoal);
+}
 
     // Get All Goals
     public List<GoalResponseDTO> getAllGoals() {
-        return goalRepository.findAll()
-                .stream()
-                .map(this::convertToResponseDTO)
-                .collect(Collectors.toList());
-    }
 
-    // Get Goal By Id
-    public GoalResponseDTO getGoalById(Long id) {
+        Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
 
-        Goal goal = goalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Goal not found"));
+    String email = authentication.getName();
 
-        return convertToResponseDTO(goal);
-    }
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    return goalRepository.findByUser(user)
+            .stream()
+            .map(this::convertToResponseDTO)
+            .collect(Collectors.toList());
+}
+
+public GoalResponseDTO getGoalById(Long id) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    Goal goal = goalRepository.findByIdAndUser(id, user)
+            .orElseThrow(() -> new RuntimeException("Goal not found"));
+
+    return convertToResponseDTO(goal);
+}
 
     // Update Goal
     public GoalResponseDTO updateGoal(Long id, GoalRequestDTO request) {
 
-        Goal goal = goalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Goal not found"));
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
 
-        goal.setTitle(request.getTitle());
-        goal.setDescription(request.getDescription());
-        goal.setTargetDate(request.getTargetDate());
-        goal.setStatus(request.getStatus());
+    String email = authentication.getName();
 
-        Goal updatedGoal = goalRepository.save(goal);
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return convertToResponseDTO(updatedGoal);
-    }
+    Goal goal = goalRepository.findByIdAndUser(id, user)
+            .orElseThrow(() -> new RuntimeException("Goal not found"));
+
+    goal.setTitle(request.getTitle());
+    goal.setDescription(request.getDescription());
+    goal.setTargetDate(request.getTargetDate());
+    goal.setStatus(request.getStatus());
+
+    Goal updatedGoal = goalRepository.save(goal);
+
+    return convertToResponseDTO(updatedGoal);
+}
 
     // Delete Goal
     public void deleteGoal(Long id) {
 
-        Goal goal = goalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Goal not found"));
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
 
-        goalRepository.delete(goal);
-    }
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    Goal goal = goalRepository.findByIdAndUser(id, user)
+            .orElseThrow(() -> new RuntimeException("Goal not found"));
+
+    goalRepository.delete(goal);
+}
 
     // Convert Entity → DTO
     private GoalResponseDTO convertToResponseDTO(Goal goal) {

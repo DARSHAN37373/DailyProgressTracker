@@ -20,6 +20,10 @@ public class Goal {
     @Enumerated(EnumType.STRING)
     private GoalStatus status;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Goal() {
     }
 
@@ -61,5 +65,16 @@ public class Goal {
 
     public void setStatus(GoalStatus status) {
     this.status = status;
+}
+    public User getUser() {
+    return user;
+}
+
+    public void setUser(User user) {
+    this.user = user;
+
+}
+    public void testMethod() {
+    System.out.println("TEST");
 }
 }

@@ -2,6 +2,7 @@ package com.darshan.dailyprogress.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -40,6 +41,11 @@ public class User {
 
     private LocalDateTime updatedAt;
 
+    
+        @OneToMany(mappedBy = "user")
+        private List<Goal> goals;
+    
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -51,8 +57,7 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    public User() {
-    }
+    
 
     public Long getId() {
         return id;
@@ -137,4 +142,13 @@ public class User {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
+    public User() {
+}
+    public List<Goal> getGoals() {
+    return goals;
+}
+
+public void setGoals(List<Goal> goals) {
+    this.goals = goals;
+}
 }
