@@ -13,4 +13,5 @@ public interface DailyActivityRepository extends JpaRepository<DailyActivity, Lo
 
     Optional<DailyActivity> findByIdAndUser(Long id, User user);
 
+    long countByUser(User user);
 }

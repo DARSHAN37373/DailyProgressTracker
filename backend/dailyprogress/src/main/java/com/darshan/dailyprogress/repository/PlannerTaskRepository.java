@@ -13,4 +13,5 @@ public interface PlannerTaskRepository extends JpaRepository<PlannerTask, Long> 
 
     Optional<PlannerTask> findByIdAndUser(Long id, User user);
 
+    long countByUser(User user);
 }
