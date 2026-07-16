@@ -7,6 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.darshan.dailyprogress.entity.GoalStatus;
+import com.darshan.dailyprogress.entity.HabitStatus;
+import com.darshan.dailyprogress.entity.PlannerStatus;
+
 @Service
 public class DashboardService {
 
@@ -42,16 +46,37 @@ public class DashboardService {
         DashboardResponseDTO response = new DashboardResponseDTO();
 
         response.setTotalGoals(
-                (long) goalRepository.findByUser(user).size());
+                 goalRepository.countByUser(user));
+
+
+        response.setCompletedGoals(
+        goalRepository.countByUserAndStatus(
+                user,
+                GoalStatus.COMPLETED));
 
         response.setTotalActivities(
-                (long) dailyActivityRepository.findByUser(user).size());
+                dailyActivityRepository.countByUser(user));
 
         response.setTotalHabits(
-                (long) habitRepository.findByUser(user).size());
+                habitRepository.countByUser(user));
+
+        response.setActiveHabits(
+        habitRepository.countByUserAndStatus(
+                user,
+                HabitStatus.ACTIVE));
 
         response.setTotalPlannerTasks(
-                (long) plannerTaskRepository.findByUser(user).size());
+                plannerTaskRepository.countByUser(user));
+
+        response.setCompletedPlannerTasks(
+        plannerTaskRepository.countByUserAndStatus(
+                user,
+                PlannerStatus.COMPLETED));
+
+        response.setPendingPlannerTasks(
+    plannerTaskRepository.countByUserAndStatus(
+            user,
+            PlannerStatus.PLANNED));
 
         return response;
     }
