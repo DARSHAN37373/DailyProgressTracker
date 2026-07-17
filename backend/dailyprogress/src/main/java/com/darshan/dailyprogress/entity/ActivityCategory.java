@@ -1,7 +1,7 @@
 package com.darshan.dailyprogress.entity;
 
 public enum ActivityCategory {
-
+   
     STUDY,
     WORKOUT,
     RUNNING,
