@@ -61,20 +61,6 @@ public List<ReminderResponseDTO> getAllReminders() {
             .collect(Collectors.toList());
 }
 
-private ReminderResponseDTO mapToResponse(Reminder reminder) {
-
-    ReminderResponseDTO response = new ReminderResponseDTO();
-
-    response.setId(reminder.getId());
-    response.setTitle(reminder.getTitle());
-    response.setDescription(reminder.getDescription());
-    response.setReminderDate(reminder.getReminderDate());
-    response.setReminderTime(reminder.getReminderTime());
-    response.setRepeatType(reminder.getRepeatType());
-    response.setStatus(reminder.getStatus());
-
-    return response;
-}
 public ReminderResponseDTO getReminderById(Long id) {
 
     User user = getLoggedInUser();
@@ -88,8 +74,7 @@ public ReminderResponseDTO getReminderById(Long id) {
 
     return mapToResponse(reminder);
 }
-public ReminderResponseDTO updateReminder(Long id,
-                                          ReminderRequestDTO request) {
+public ReminderResponseDTO updateReminder(Long id, ReminderRequestDTO request) {
 
     User user = getLoggedInUser();
 
@@ -123,4 +108,22 @@ public void deleteReminder(Long id) {
 
     reminderRepository.delete(reminder);
 }
+
+private ReminderResponseDTO mapToResponse(Reminder reminder) {
+
+    ReminderResponseDTO response = new ReminderResponseDTO();
+
+    response.setId(reminder.getId());
+    response.setTitle(reminder.getTitle());
+    response.setDescription(reminder.getDescription());
+    response.setReminderDate(reminder.getReminderDate());
+    response.setReminderTime(reminder.getReminderTime());
+    response.setRepeatType(reminder.getRepeatType());
+    response.setStatus(reminder.getStatus());
+
+    return response;
+}
+
+
+
 }
