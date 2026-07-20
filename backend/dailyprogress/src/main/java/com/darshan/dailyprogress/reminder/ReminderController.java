@@ -20,6 +20,7 @@ public class ReminderController {
     public ReminderResponseDTO createReminder(
             @RequestBody ReminderRequestDTO request) {
 
+                 System.out.println(">>> Controller reached");
         return reminderService.createReminder(request);
     }
 
@@ -46,8 +47,7 @@ public class ReminderController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteReminder(
-            @PathVariable Long id) {
+    public void deleteReminder( @PathVariable Long id) {
 
         reminderService.deleteReminder(id);
     }

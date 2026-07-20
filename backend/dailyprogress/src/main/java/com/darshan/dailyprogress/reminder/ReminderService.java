@@ -33,7 +33,11 @@ private User getLoggedInUser() {
             .orElseThrow(() -> new RuntimeException("User not found"));
 }
 
+   
+
 public ReminderResponseDTO createReminder(ReminderRequestDTO request) {
+
+     System.out.println(">>> createReminder() called");
 
     User user = getLoggedInUser();
 
@@ -45,6 +49,19 @@ public ReminderResponseDTO createReminder(ReminderRequestDTO request) {
     reminder.setReminderTime(request.getReminderTime());
     reminder.setRepeatType(request.getRepeatType());
     reminder.setUser(user);
+
+     System.out.println("===== Reminder Before Save =====");
+    System.out.println("Title: " + reminder.getTitle());
+    System.out.println("Description: " + reminder.getDescription());
+    System.out.println("Date: " + reminder.getReminderDate());
+    System.out.println("Time: " + reminder.getReminderTime());
+    System.out.println("Repeat Type: " + reminder.getRepeatType());
+    System.out.println("Status: " + reminder.getStatus());
+    System.out.println("User: " +
+            (reminder.getUser() != null
+                    ? reminder.getUser().getEmail()
+                    : "NULL"));
+
 
     reminder = reminderRepository.save(reminder);
 
