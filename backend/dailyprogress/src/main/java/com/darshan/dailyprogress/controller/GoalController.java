@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+
 @RestController
 @RequestMapping("/api/goals")
 public class GoalController {
@@ -19,11 +21,13 @@ public class GoalController {
     }
 
     // Create Goal
+    
+    
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public GoalResponseDTO createGoal(@Valid @RequestBody GoalRequestDTO request) {
         return goalService.createGoal(request);
     }
-
     // Get All Goals
     @GetMapping
     public List<GoalResponseDTO> getAllGoals() {
@@ -47,10 +51,10 @@ public class GoalController {
 
     // Delete Goal
     @DeleteMapping("/{id}")
-    public String deleteGoal(@PathVariable Long id) {
+public String deleteGoal(@PathVariable Long id) {
 
-        goalService.deleteGoal(id);
+    goalService.deleteGoal(id);
 
-        return "Goal deleted successfully";
-    }
+    return "Goal deleted successfully";
+}
 }
