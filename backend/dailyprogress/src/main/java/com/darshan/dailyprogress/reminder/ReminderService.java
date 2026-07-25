@@ -1,9 +1,7 @@
 package com.darshan.dailyprogress.reminder;
 
 import com.darshan.dailyprogress.entity.User;
-import com.darshan.dailyprogress.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.darshan.dailyprogress.service.CurrentUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,134 +11,112 @@ import java.util.stream.Collectors;
 public class ReminderService {
 
     private final ReminderRepository reminderRepository;
-    private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
 
     public ReminderService(ReminderRepository reminderRepository,
-                           UserRepository userRepository) {
+                           CurrentUserService currentUserService) {
+
         this.reminderRepository = reminderRepository;
-        this.userRepository = userRepository;
+        this.currentUserService = currentUserService;
     }
 
+    // Create Reminder
+    public ReminderResponseDTO createReminder(ReminderRequestDTO request) {
 
-private User getLoggedInUser() {
+        User user = currentUserService.getCurrentUser();
 
-    Authentication authentication =
-            SecurityContextHolder.getContext().getAuthentication();
+        Reminder reminder = new Reminder();
 
-    String email = authentication.getName();
+        reminder.setTitle(request.getTitle());
+        reminder.setDescription(request.getDescription());
+        reminder.setReminderDate(request.getReminderDate());
+        reminder.setReminderTime(request.getReminderTime());
+        reminder.setRepeatType(request.getRepeatType());
+        reminder.setUser(user);
 
-    return userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-}
+        reminder = reminderRepository.save(reminder);
 
-   
-
-public ReminderResponseDTO createReminder(ReminderRequestDTO request) {
-
-     System.out.println(">>> createReminder() called");
-
-    User user = getLoggedInUser();
-
-    Reminder reminder = new Reminder();
-
-    reminder.setTitle(request.getTitle());
-    reminder.setDescription(request.getDescription());
-    reminder.setReminderDate(request.getReminderDate());
-    reminder.setReminderTime(request.getReminderTime());
-    reminder.setRepeatType(request.getRepeatType());
-    reminder.setUser(user);
-
-     System.out.println("===== Reminder Before Save =====");
-    System.out.println("Title: " + reminder.getTitle());
-    System.out.println("Description: " + reminder.getDescription());
-    System.out.println("Date: " + reminder.getReminderDate());
-    System.out.println("Time: " + reminder.getReminderTime());
-    System.out.println("Repeat Type: " + reminder.getRepeatType());
-    System.out.println("Status: " + reminder.getStatus());
-    System.out.println("User: " +
-            (reminder.getUser() != null
-                    ? reminder.getUser().getEmail()
-                    : "NULL"));
-
-
-    reminder = reminderRepository.save(reminder);
-
-    return mapToResponse(reminder);
-}
-
-public List<ReminderResponseDTO> getAllReminders() {
-
-    User user = getLoggedInUser();
-
-    return reminderRepository.findByUser(user)
-            .stream()
-            .map(this::mapToResponse)
-            .collect(Collectors.toList());
-}
-
-public ReminderResponseDTO getReminderById(Long id) {
-
-    User user = getLoggedInUser();
-
-    Reminder reminder = reminderRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Reminder not found"));
-
-    if (!reminder.getUser().getId().equals(user.getId())) {
-        throw new RuntimeException("Access denied");
+        return mapToResponse(reminder);
     }
 
-    return mapToResponse(reminder);
-}
-public ReminderResponseDTO updateReminder(Long id, ReminderRequestDTO request) {
+    // Get All Reminders
+    public List<ReminderResponseDTO> getAllReminders() {
 
-    User user = getLoggedInUser();
+        User user = currentUserService.getCurrentUser();
 
-    Reminder reminder = reminderRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Reminder not found"));
-
-    if (!reminder.getUser().getId().equals(user.getId())) {
-        throw new RuntimeException("Access denied");
+        return reminderRepository.findByUser(user)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
-    reminder.setTitle(request.getTitle());
-    reminder.setDescription(request.getDescription());
-    reminder.setReminderDate(request.getReminderDate());
-    reminder.setReminderTime(request.getReminderTime());
-    reminder.setRepeatType(request.getRepeatType());
+    // Get Reminder By Id
+    public ReminderResponseDTO getReminderById(Long id) {
 
-    reminder = reminderRepository.save(reminder);
+        User user = currentUserService.getCurrentUser();
 
-    return mapToResponse(reminder);
-}
-public void deleteReminder(Long id) {
+        Reminder reminder = reminderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reminder not found"));
 
-    User user = getLoggedInUser();
+        if (!reminder.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Access denied");
+        }
 
-    Reminder reminder = reminderRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Reminder not found"));
-
-    if (!reminder.getUser().getId().equals(user.getId())) {
-        throw new RuntimeException("Access denied");
+        return mapToResponse(reminder);
     }
 
-    reminderRepository.delete(reminder);
-}
+    // Update Reminder
+    public ReminderResponseDTO updateReminder(Long id,
+                                              ReminderRequestDTO request) {
 
-private ReminderResponseDTO mapToResponse(Reminder reminder) {
+        User user = currentUserService.getCurrentUser();
 
-    ReminderResponseDTO response = new ReminderResponseDTO();
+        Reminder reminder = reminderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reminder not found"));
 
-    response.setId(reminder.getId());
-    response.setTitle(reminder.getTitle());
-    response.setDescription(reminder.getDescription());
-    response.setReminderDate(reminder.getReminderDate());
-    response.setReminderTime(reminder.getReminderTime());
-    response.setRepeatType(reminder.getRepeatType());
-    response.setStatus(reminder.getStatus());
+        if (!reminder.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Access denied");
+        }
 
-    return response;
-}
+        reminder.setTitle(request.getTitle());
+        reminder.setDescription(request.getDescription());
+        reminder.setReminderDate(request.getReminderDate());
+        reminder.setReminderTime(request.getReminderTime());
+        reminder.setRepeatType(request.getRepeatType());
 
+        reminder = reminderRepository.save(reminder);
 
+        return mapToResponse(reminder);
+    }
 
+    // Delete Reminder
+    public void deleteReminder(Long id) {
+
+        User user = currentUserService.getCurrentUser();
+
+        Reminder reminder = reminderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reminder not found"));
+
+        if (!reminder.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Access denied");
+        }
+
+        reminderRepository.delete(reminder);
+    }
+
+    // Convert Entity → DTO
+    private ReminderResponseDTO mapToResponse(Reminder reminder) {
+
+        ReminderResponseDTO response = new ReminderResponseDTO();
+
+        response.setId(reminder.getId());
+        response.setTitle(reminder.getTitle());
+        response.setDescription(reminder.getDescription());
+        response.setReminderDate(reminder.getReminderDate());
+        response.setReminderTime(reminder.getReminderTime());
+        response.setRepeatType(reminder.getRepeatType());
+        response.setStatus(reminder.getStatus());
+
+        return response;
+    }
 }

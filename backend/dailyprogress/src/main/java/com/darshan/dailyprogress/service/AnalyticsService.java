@@ -10,11 +10,11 @@ import com.darshan.dailyprogress.repository.GoalRepository;
 import com.darshan.dailyprogress.repository.HabitRepository;
 import com.darshan.dailyprogress.repository.PlannerTaskRepository;
 import com.darshan.dailyprogress.repository.UserRepository;
+import com.darshan.dailyprogress.service.CurrentUserService;
 
 import java.time.LocalDate;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 
 import com.darshan.dailyprogress.entity.DailyActivity;
@@ -23,34 +23,28 @@ import java.util.List;
 @Service
 public class AnalyticsService {
 
-    private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
     private final GoalRepository goalRepository;
     private final HabitRepository habitRepository;
     private final PlannerTaskRepository plannerTaskRepository;
     private final DailyActivityRepository dailyActivityRepository;
 
-    public AnalyticsService(UserRepository userRepository,
-                            GoalRepository goalRepository,
-                            HabitRepository habitRepository,
-                            PlannerTaskRepository plannerTaskRepository,
-                            DailyActivityRepository dailyActivityRepository) {
+    public AnalyticsService(CurrentUserService currentUserService,
+                        GoalRepository goalRepository,
+                        HabitRepository habitRepository,
+                        PlannerTaskRepository plannerTaskRepository,
+                        DailyActivityRepository dailyActivityRepository) {
 
-        this.userRepository = userRepository;
-        this.goalRepository = goalRepository;
-        this.habitRepository = habitRepository;
-        this.plannerTaskRepository = plannerTaskRepository;
-        this.dailyActivityRepository = dailyActivityRepository;
-    }
+    this.currentUserService = currentUserService;
+    this.goalRepository = goalRepository;
+    this.habitRepository = habitRepository;
+    this.plannerTaskRepository = plannerTaskRepository;
+    this.dailyActivityRepository = dailyActivityRepository;
+}
 
     public AnalyticsResponseDTO getAnalytics() {
 
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        String email = authentication.getName();
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+       User user = currentUserService.getCurrentUser();
 
         AnalyticsResponseDTO response = new AnalyticsResponseDTO();
 

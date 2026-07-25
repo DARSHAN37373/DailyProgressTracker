@@ -20,7 +20,7 @@ public class ReminderController {
     public ReminderResponseDTO createReminder(
             @RequestBody ReminderRequestDTO request) {
 
-                 System.out.println(">>> Controller reached");
+                 
         return reminderService.createReminder(request);
     }
 

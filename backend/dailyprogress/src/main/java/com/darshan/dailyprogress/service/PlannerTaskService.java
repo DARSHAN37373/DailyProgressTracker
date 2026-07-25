@@ -26,36 +26,37 @@ public class PlannerTaskService {
         this.userRepository = userRepository;
     }
 
-    // Create Planner Task
-    public PlannerTaskResponseDTO createPlannerTask(PlannerTaskRequestDTO request) {
+    
+   // Create Planner Task
+public PlannerTaskResponseDTO createPlannerTask(PlannerTaskRequestDTO request) {
 
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
 
-        String email = authentication.getName();
+    String email = authentication.getName();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        PlannerTask plannerTask = new PlannerTask();
+    PlannerTask plannerTask = new PlannerTask();
 
-        plannerTask.setUser(user);
-        plannerTask.setTitle(request.getTitle());
-        plannerTask.setDescription(request.getDescription());
-        plannerTask.setCategory(request.getCategory());
-        plannerTask.setPriority(request.getPriority());
-        plannerTask.setStatus(request.getStatus());
-        plannerTask.setStartDate(request.getStartDate());
-        plannerTask.setDueDate(request.getDueDate());
-        plannerTask.setReminderTime(request.getReminderTime());
-        plannerTask.setEstimatedHours(request.getEstimatedHours());
-        plannerTask.setRecurring(request.getRecurring());
-        plannerTask.setActualHours(0);
+    plannerTask.setUser(user);
+    plannerTask.setTitle(request.getTitle());
+    plannerTask.setDescription(request.getDescription());
+    plannerTask.setCategory(request.getCategory());
+    plannerTask.setPriority(request.getPriority());
+    plannerTask.setStatus(request.getStatus());
+    plannerTask.setStartDate(request.getStartDate());
+    plannerTask.setDueDate(request.getDueDate());
+    plannerTask.setReminderTime(request.getReminderTime());
+    plannerTask.setEstimatedHours(request.getEstimatedHours());
+    plannerTask.setRecurring(request.getRecurring());
+    plannerTask.setActualHours(0);
 
-        PlannerTask savedTask = plannerTaskRepository.save(plannerTask);
+    PlannerTask savedTask = plannerTaskRepository.save(plannerTask);
 
-        return convertToResponseDTO(savedTask);
-    }
+    return convertToResponseDTO(savedTask);
+}
 
     // Get All Planner Tasks
     public List<PlannerTaskResponseDTO> getAllPlannerTasks() {

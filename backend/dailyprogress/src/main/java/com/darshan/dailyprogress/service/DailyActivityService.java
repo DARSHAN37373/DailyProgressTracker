@@ -115,37 +115,37 @@ public class DailyActivityService {
         return convertToResponseDTO(updatedActivity);
     }
 
+    
     // Delete Activity
-    public void deleteActivity(Long id) {
+public void deleteActivity(Long id) {
 
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
 
-        String email = authentication.getName();
+    String email = authentication.getName();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        DailyActivity activity = dailyActivityRepository
-                .findByIdAndUser(id, user)
-                .orElseThrow(() -> new RuntimeException("Activity not found"));
+    DailyActivity activity = dailyActivityRepository
+            .findByIdAndUser(id, user)
+            .orElseThrow(() -> new RuntimeException("Activity not found"));
 
-        dailyActivityRepository.delete(activity);
-    }
+    dailyActivityRepository.delete(activity);
+}
+// Convert Entity to DTO
+private DailyActivityResponseDTO convertToResponseDTO(DailyActivity activity) {
 
-    // Convert Entity to DTO
-    private DailyActivityResponseDTO convertToResponseDTO(DailyActivity activity) {
+    DailyActivityResponseDTO response = new DailyActivityResponseDTO();
 
-        DailyActivityResponseDTO response = new DailyActivityResponseDTO();
+    response.setId(activity.getId());
+    response.setTitle(activity.getTitle());
+    response.setDescription(activity.getDescription());
+    response.setCategory(activity.getCategory());
+    response.setStatus(activity.getStatus());
+    response.setDuration(activity.getDuration());
+    response.setActivityDate(activity.getActivityDate());
 
-        response.setId(activity.getId());
-        response.setTitle(activity.getTitle());
-        response.setDescription(activity.getDescription());
-        response.setCategory(activity.getCategory());
-        response.setStatus(activity.getStatus());
-        response.setDuration(activity.getDuration());
-        response.setActivityDate(activity.getActivityDate());
-
-        return response;
-    }
+    return response;
+}
 }

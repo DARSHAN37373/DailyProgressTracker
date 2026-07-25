@@ -35,49 +35,48 @@ public class DashboardService {
 
     public DashboardResponseDTO getDashboard() {
 
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
 
-        String email = authentication.getName();
+    String email = authentication.getName();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        DashboardResponseDTO response = new DashboardResponseDTO();
+    DashboardResponseDTO response = new DashboardResponseDTO();
 
-        response.setTotalGoals(
-                 goalRepository.countByUser(user));
+    response.setTotalGoals(
+            goalRepository.countByUser(user));
 
+    response.setCompletedGoals(
+            goalRepository.countByUserAndStatus(
+                    user,
+                    GoalStatus.COMPLETED));
 
-        response.setCompletedGoals(
-        goalRepository.countByUserAndStatus(
-                user,
-                GoalStatus.COMPLETED));
+    response.setTotalActivities(
+            dailyActivityRepository.countByUser(user));
 
-        response.setTotalActivities(
-                dailyActivityRepository.countByUser(user));
+    response.setTotalHabits(
+            habitRepository.countByUser(user));
 
-        response.setTotalHabits(
-                habitRepository.countByUser(user));
+    response.setActiveHabits(
+            habitRepository.countByUserAndStatus(
+                    user,
+                    HabitStatus.ACTIVE));
 
-        response.setActiveHabits(
-        habitRepository.countByUserAndStatus(
-                user,
-                HabitStatus.ACTIVE));
+    response.setTotalPlannerTasks(
+            plannerTaskRepository.countByUser(user));
 
-        response.setTotalPlannerTasks(
-                plannerTaskRepository.countByUser(user));
+    response.setCompletedPlannerTasks(
+            plannerTaskRepository.countByUserAndStatus(
+                    user,
+                    PlannerStatus.COMPLETED));
 
-        response.setCompletedPlannerTasks(
-        plannerTaskRepository.countByUserAndStatus(
-                user,
-                PlannerStatus.COMPLETED));
+    response.setPendingPlannerTasks(
+            plannerTaskRepository.countByUserAndStatus(
+                    user,
+                    PlannerStatus.PLANNED));
 
-        response.setPendingPlannerTasks(
-    plannerTaskRepository.countByUserAndStatus(
-            user,
-            PlannerStatus.PLANNED));
-
-        return response;
-    }
+    return response;
+}
 }

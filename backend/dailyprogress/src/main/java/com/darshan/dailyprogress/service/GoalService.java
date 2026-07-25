@@ -32,6 +32,7 @@ public class GoalService {
 
     
     // Create Goal
+// Create Goal
 public GoalResponseDTO createGoal(GoalRequestDTO request) {
 
     Authentication authentication =
@@ -44,7 +45,6 @@ public GoalResponseDTO createGoal(GoalRequestDTO request) {
 
     Goal goal = new Goal();
 
-    
     goal.setUser(user);
     goal.setTitle(request.getTitle());
     goal.setDescription(request.getDescription());

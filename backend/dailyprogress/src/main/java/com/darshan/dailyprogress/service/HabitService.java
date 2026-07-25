@@ -28,34 +28,35 @@ public class HabitService {
     }
 
     // Create Habit
-    public HabitResponseDTO createHabit(HabitRequestDTO request) {
+    
+public HabitResponseDTO createHabit(HabitRequestDTO request) {
 
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
 
-        String email = authentication.getName();
+    String email = authentication.getName();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Habit habit = new Habit();
+    Habit habit = new Habit();
 
-        habit.setUser(user);
-        habit.setName(request.getName());
-        habit.setDescription(request.getDescription());
-        habit.setFrequency(request.getFrequency());
-        habit.setStatus(request.getStatus());
-        habit.setTargetCount(request.getTargetCount());
+    habit.setUser(user);
+    habit.setName(request.getName());
+    habit.setDescription(request.getDescription());
+    habit.setFrequency(request.getFrequency());
+    habit.setStatus(request.getStatus());
+    habit.setTargetCount(request.getTargetCount());
 
-        habit.setCompletedCount(0);
-        habit.setCurrentStreak(0);
-        habit.setLongestStreak(0);
-        habit.setCreatedDate(LocalDate.now());
+    habit.setCompletedCount(0);
+    habit.setCurrentStreak(0);
+    habit.setLongestStreak(0);
+    habit.setCreatedDate(LocalDate.now());
 
-        Habit savedHabit = habitRepository.save(habit);
+    Habit savedHabit = habitRepository.save(habit);
 
-        return convertToResponseDTO(savedHabit);
-    }
+    return convertToResponseDTO(savedHabit);
+}
 
     // Get All Habits
     public List<HabitResponseDTO> getAllHabits() {
