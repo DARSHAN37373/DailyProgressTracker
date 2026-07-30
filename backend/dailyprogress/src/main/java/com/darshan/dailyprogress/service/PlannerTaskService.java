@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.darshan.dailyprogress.exception.ResourceNotFoundException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +38,7 @@ public PlannerTaskResponseDTO createPlannerTask(PlannerTaskRequestDTO request) {
     String email = authentication.getName();
 
     User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
     PlannerTask plannerTask = new PlannerTask();
 
@@ -67,7 +69,7 @@ public PlannerTaskResponseDTO createPlannerTask(PlannerTaskRequestDTO request) {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return plannerTaskRepository.findByUser(user)
                 .stream()
@@ -84,11 +86,11 @@ public PlannerTaskResponseDTO createPlannerTask(PlannerTaskRequestDTO request) {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         PlannerTask plannerTask =
                 plannerTaskRepository.findByIdAndUser(id, user)
-                        .orElseThrow(() -> new RuntimeException("Planner Task not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Planner Task not found"));
 
         return convertToResponseDTO(plannerTask);
     }
@@ -103,11 +105,11 @@ public PlannerTaskResponseDTO createPlannerTask(PlannerTaskRequestDTO request) {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         PlannerTask plannerTask =
                 plannerTaskRepository.findByIdAndUser(id, user)
-                        .orElseThrow(() -> new RuntimeException("Planner Task not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Planner Task not found"));
 
         plannerTask.setTitle(request.getTitle());
         plannerTask.setDescription(request.getDescription());
@@ -134,11 +136,11 @@ public PlannerTaskResponseDTO createPlannerTask(PlannerTaskRequestDTO request) {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         PlannerTask plannerTask =
                 plannerTaskRepository.findByIdAndUser(id, user)
-                        .orElseThrow(() -> new RuntimeException("Planner Task not found"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Planner Task not found"));
 
         plannerTaskRepository.delete(plannerTask);
     }

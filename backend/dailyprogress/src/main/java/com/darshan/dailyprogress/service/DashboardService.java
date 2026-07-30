@@ -11,6 +11,8 @@ import com.darshan.dailyprogress.entity.GoalStatus;
 import com.darshan.dailyprogress.entity.HabitStatus;
 import com.darshan.dailyprogress.entity.PlannerStatus;
 
+import com.darshan.dailyprogress.exception.ResourceNotFoundException;
+
 @Service
 public class DashboardService {
 
@@ -41,7 +43,7 @@ public class DashboardService {
     String email = authentication.getName();
 
     User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
     DashboardResponseDTO response = new DashboardResponseDTO();
 

@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.darshan.dailyprogress.exception.ResourceNotFoundException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +37,7 @@ public class DailyActivityService {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         DailyActivity activity = new DailyActivity();
 
@@ -61,7 +63,7 @@ public class DailyActivityService {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return dailyActivityRepository.findByUser(user)
                 .stream()
@@ -78,11 +80,11 @@ public class DailyActivityService {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         DailyActivity activity = dailyActivityRepository
                 .findByIdAndUser(id, user)
-                .orElseThrow(() -> new RuntimeException("Activity not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Activity not found"));
 
         return convertToResponseDTO(activity);
     }
@@ -97,11 +99,11 @@ public class DailyActivityService {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         DailyActivity activity = dailyActivityRepository
                 .findByIdAndUser(id, user)
-                .orElseThrow(() -> new RuntimeException("Activity not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Activity not found"));
 
         activity.setTitle(request.getTitle());
         activity.setDescription(request.getDescription());
@@ -125,11 +127,11 @@ public void deleteActivity(Long id) {
     String email = authentication.getName();
 
     User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
     DailyActivity activity = dailyActivityRepository
             .findByIdAndUser(id, user)
-            .orElseThrow(() -> new RuntimeException("Activity not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Activity not found"));
 
     dailyActivityRepository.delete(activity);
 }

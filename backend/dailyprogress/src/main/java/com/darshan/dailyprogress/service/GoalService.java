@@ -14,8 +14,9 @@ import com.darshan.dailyprogress.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.darshan.dailyprogress.exception.ResourceNotFoundException;
 
-
+import com.darshan.dailyprogress.exception.UnauthorizedException;
 @Service
 public class GoalService {
 
@@ -41,7 +42,7 @@ public GoalResponseDTO createGoal(GoalRequestDTO request) {
     String email = authentication.getName();
 
     User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
     Goal goal = new Goal();
 
@@ -84,7 +85,7 @@ public GoalResponseDTO getGoalById(Long id) {
             .orElseThrow(() -> new RuntimeException("User not found"));
 
     Goal goal = goalRepository.findByIdAndUser(id, user)
-            .orElseThrow(() -> new RuntimeException("Goal not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Goal not found"));
 
     return convertToResponseDTO(goal);
 }

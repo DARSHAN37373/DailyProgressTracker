@@ -4,6 +4,7 @@ import com.darshan.dailyprogress.dto.HabitRequestDTO;
 import com.darshan.dailyprogress.dto.HabitResponseDTO;
 import com.darshan.dailyprogress.entity.Habit;
 import com.darshan.dailyprogress.entity.User;
+import com.darshan.dailyprogress.exception.ResourceNotFoundException;
 import com.darshan.dailyprogress.repository.HabitRepository;
 import com.darshan.dailyprogress.repository.UserRepository;
 import org.springframework.security.core.Authentication;
@@ -37,7 +38,7 @@ public HabitResponseDTO createHabit(HabitRequestDTO request) {
     String email = authentication.getName();
 
     User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
     Habit habit = new Habit();
 
@@ -67,7 +68,7 @@ public HabitResponseDTO createHabit(HabitRequestDTO request) {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return habitRepository.findByUser(user)
                 .stream()
@@ -84,10 +85,10 @@ public HabitResponseDTO createHabit(HabitRequestDTO request) {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Habit habit = habitRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new RuntimeException("Habit not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Habit not found"));
 
         return convertToResponseDTO(habit);
     }
@@ -102,10 +103,10 @@ public HabitResponseDTO createHabit(HabitRequestDTO request) {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Habit habit = habitRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new RuntimeException("Habit not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Habit not found"));
 
         habit.setName(request.getName());
         habit.setDescription(request.getDescription());
@@ -127,10 +128,10 @@ public HabitResponseDTO createHabit(HabitRequestDTO request) {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Habit habit = habitRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new RuntimeException("Habit not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Habit not found"));
 
         habitRepository.delete(habit);
     }

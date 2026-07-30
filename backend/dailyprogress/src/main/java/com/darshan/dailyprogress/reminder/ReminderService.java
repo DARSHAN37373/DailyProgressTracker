@@ -4,6 +4,8 @@ import com.darshan.dailyprogress.entity.User;
 import com.darshan.dailyprogress.service.CurrentUserService;
 import org.springframework.stereotype.Service;
 
+import com.darshan.dailyprogress.exception.ResourceNotFoundException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,10 +58,10 @@ public class ReminderService {
         User user = currentUserService.getCurrentUser();
 
         Reminder reminder = reminderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reminder not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Reminder not found"));
 
         if (!reminder.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Access denied");
+            throw new ResourceNotFoundException("Access denied");
         }
 
         return mapToResponse(reminder);
@@ -72,10 +74,10 @@ public class ReminderService {
         User user = currentUserService.getCurrentUser();
 
         Reminder reminder = reminderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reminder not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Reminder not found"));
 
         if (!reminder.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Access denied");
+            throw new ResourceNotFoundException("Access denied");
         }
 
         reminder.setTitle(request.getTitle());
@@ -95,10 +97,10 @@ public class ReminderService {
         User user = currentUserService.getCurrentUser();
 
         Reminder reminder = reminderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reminder not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Reminder not found"));
 
         if (!reminder.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Access denied");
+            throw new ResourceNotFoundException("Access denied");
         }
 
         reminderRepository.delete(reminder);
