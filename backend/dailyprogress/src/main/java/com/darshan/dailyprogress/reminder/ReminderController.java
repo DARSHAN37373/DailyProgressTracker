@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/reminders")
 public class ReminderController {
@@ -15,14 +17,13 @@ public class ReminderController {
         this.reminderService = reminderService;
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ReminderResponseDTO createReminder(
-            @RequestBody ReminderRequestDTO request) {
+   @PostMapping
+@ResponseStatus(HttpStatus.CREATED)
+public ReminderResponseDTO createReminder(
+        @Valid @RequestBody ReminderRequestDTO request) {
 
-                 
-        return reminderService.createReminder(request);
-    }
+    return reminderService.createReminder(request);
+}
 
     @GetMapping
     public List<ReminderResponseDTO> getAllReminders() {
@@ -38,13 +39,12 @@ public class ReminderController {
     }
 
     @PutMapping("/{id}")
-    public ReminderResponseDTO updateReminder(
-            @PathVariable Long id,
-            @RequestBody ReminderRequestDTO request) {
+public ReminderResponseDTO updateReminder(
+        @PathVariable Long id,
+        @Valid @RequestBody ReminderRequestDTO request) {
 
-        return reminderService.updateReminder(id, request);
-    }
-
+    return reminderService.updateReminder(id, request);
+}
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReminder( @PathVariable Long id) {

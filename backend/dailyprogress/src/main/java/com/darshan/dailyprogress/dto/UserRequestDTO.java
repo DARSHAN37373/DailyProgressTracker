@@ -7,25 +7,26 @@ import jakarta.validation.constraints.Size;
 public class UserRequestDTO {
 
     @NotBlank(message = "Full name is required")
-    private String fullName;
+@Size(min = 3, max = 50, message = "Full name must be between 3 and 50 characters")
+private String fullName;
 
-    @NotBlank(message = "Username is required")
-    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
-    private String username;
+@NotBlank(message = "Username is required")
+@Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
+private String username;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Enter a valid email address")
-    private String email;
+@NotBlank(message = "Email is required")
+@Email(message = "Enter a valid email address")
+private String email;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters")
-    private String password;
+@NotBlank(message = "Password is required")
+@Size(min = 8, message = "Password must be at least 8 characters")
+private String password;
 
-    @Size(max = 250, message = "Bio cannot exceed 250 characters")
-    private String bio;
+@Size(max = 250, message = "Bio cannot exceed 250 characters")
+private String bio;
 
-    private String profilePicture;
-
+@Size(max = 255, message = "Profile picture URL is too long")
+private String profilePicture;
     // Default Constructor
     public UserRequestDTO() {
     }

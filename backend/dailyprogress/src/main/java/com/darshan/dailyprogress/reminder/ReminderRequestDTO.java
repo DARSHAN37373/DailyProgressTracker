@@ -3,12 +3,26 @@ package com.darshan.dailyprogress.reminder;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class ReminderRequestDTO {
 
+    @NotBlank(message = "Title is required")
+    @Size(max = 100, message = "Title cannot exceed 100 characters")
     private String title;
+
+    @Size(max = 500, message = "Description cannot exceed 500 characters")
     private String description;
+
+    @NotNull(message = "Reminder date is required")
     private LocalDate reminderDate;
+
+    @NotNull(message = "Reminder time is required")
     private LocalTime reminderTime;
+
+    @NotNull(message = "Repeat type is required")
     private RepeatType repeatType;
 
     public ReminderRequestDTO() {

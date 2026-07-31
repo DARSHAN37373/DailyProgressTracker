@@ -3,21 +3,25 @@ package com.darshan.dailyprogress.dto;
 import com.darshan.dailyprogress.entity.GoalStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
 public class GoalRequestDTO {
 
-    @NotBlank(message = "Title is required")
-    private String title;
+   @NotBlank(message = "Title is required")
+@Size(max = 100, message = "Title cannot exceed 100 characters")
+private String title;
 
-    private String description;
+@NotBlank(message = "Description is required")
+@Size(max = 500, message = "Description cannot exceed 500 characters")
+private String description;
 
-    @NotNull(message = "Target date is required")
-    private LocalDate targetDate;
+@NotNull(message = "Target date is required")
+private LocalDate targetDate;
 
-    @NotNull(message = "Status is required")
-    private GoalStatus status;
+@NotNull(message = "Status is required")
+private GoalStatus status;
 
     public GoalRequestDTO() {
     }

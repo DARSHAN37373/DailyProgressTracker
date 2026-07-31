@@ -9,22 +9,22 @@ import java.time.LocalDate;
 
 public class DailyActivityRequestDTO {
 
-    @NotBlank(message = "Title is required")
-    private String title;
+    @NotBlank(message = "Activity title is required")
+private String title;
 
-    private String description;
+private String description;
 
-    @NotNull(message = "Category is required")
-    private ActivityCategory category;
+@NotNull(message = "Category is required")
+private ActivityCategory category;
 
-    @NotNull(message = "Status is required")
-    private ActivityStatus status;
+@NotNull(message = "Status is required")
+private ActivityStatus status;
 
-    @NotNull(message = "Duration is required")
-    private Integer duration;
+@NotNull(message = "Duration is required")
+private Integer duration;
 
-    @NotNull(message = "Activity date is required")
-    private LocalDate activityDate;
+@NotNull(message = "Activity date is required")
+private LocalDate activityDate;
 
     public DailyActivityRequestDTO() {
     }
