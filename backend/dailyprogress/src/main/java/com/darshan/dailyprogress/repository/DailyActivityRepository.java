@@ -9,11 +9,18 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import com.darshan.dailyprogress.entity.ActivityStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+
 
 public interface DailyActivityRepository extends JpaRepository<DailyActivity, Long> {
 
     List<DailyActivity> findByUser(User user);
+
+    Page<DailyActivity> findByUser(User user, Pageable pageable);
+
+    
 
     List<DailyActivity> findByUserAndStatusOrderByActivityDateAsc(
         User user,

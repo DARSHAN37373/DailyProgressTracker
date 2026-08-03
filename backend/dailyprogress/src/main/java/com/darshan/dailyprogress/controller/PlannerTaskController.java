@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 @RestController
 @RequestMapping("/api/planner")
 public class PlannerTaskController {
@@ -29,6 +31,22 @@ public class PlannerTaskController {
     public List<PlannerTaskResponseDTO> getAllPlannerTasks() {
         return plannerTaskService.getAllPlannerTasks();
     }
+
+    // Get Planner Tasks with Pagination and Sorting
+@GetMapping("/page")
+public Page<PlannerTaskResponseDTO> getPlannerTasksPaginated(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "dueDate") String sortBy,
+        @RequestParam(defaultValue = "asc") String direction) {
+
+    return plannerTaskService.getPlannerTasksPaginated(
+            page,
+            size,
+            sortBy,
+            direction
+    );
+}
 
     @GetMapping("/{id}")
     public PlannerTaskResponseDTO getPlannerTaskById(@PathVariable Long id) {

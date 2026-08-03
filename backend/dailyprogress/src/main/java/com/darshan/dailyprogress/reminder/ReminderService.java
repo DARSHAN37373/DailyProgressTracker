@@ -9,6 +9,10 @@ import com.darshan.dailyprogress.exception.ResourceNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 @Service
 public class ReminderService {
 
@@ -51,6 +55,25 @@ public class ReminderService {
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
+
+    // Get Reminders with Pagination and Sorting
+public Page<ReminderResponseDTO> getRemindersPaginated(
+        int page,
+        int size,
+        String sortBy,
+        String direction) {
+
+    User user = currentUserService.getCurrentUser();
+
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    return reminderRepository.findByUser(user, pageable)
+            .map(this::mapToResponse);
+}
 
     // Get Reminder By Id
     public ReminderResponseDTO getReminderById(Long id) {

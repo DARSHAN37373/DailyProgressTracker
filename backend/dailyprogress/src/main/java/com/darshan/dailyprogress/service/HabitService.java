@@ -15,6 +15,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 @Service
 public class HabitService {
 
@@ -75,6 +80,32 @@ public HabitResponseDTO createHabit(HabitRequestDTO request) {
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    // Get Habits with Pagination and Sorting
+public Page<HabitResponseDTO> getHabitsPaginated(
+        int page,
+        int size,
+        String sortBy,
+        String direction) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    return habitRepository.findByUser(user, pageable)
+            .map(this::convertToResponseDTO);
+}
 
     // Get Habit By Id
     public HabitResponseDTO getHabitById(Long id) {

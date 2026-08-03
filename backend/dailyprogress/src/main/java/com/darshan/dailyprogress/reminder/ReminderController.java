@@ -7,6 +7,8 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Page;
+
 @RestController
 @RequestMapping("/api/reminders")
 public class ReminderController {
@@ -37,6 +39,22 @@ public ReminderResponseDTO createReminder(
 
         return reminderService.getReminderById(id);
     }
+
+    // Get Reminders with Pagination and Sorting
+@GetMapping("/page")
+public Page<ReminderResponseDTO> getRemindersPaginated(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "reminderDate") String sortBy,
+        @RequestParam(defaultValue = "asc") String direction) {
+
+    return reminderService.getRemindersPaginated(
+            page,
+            size,
+            sortBy,
+            direction
+    );
+}
 
     @PutMapping("/{id}")
 public ReminderResponseDTO updateReminder(

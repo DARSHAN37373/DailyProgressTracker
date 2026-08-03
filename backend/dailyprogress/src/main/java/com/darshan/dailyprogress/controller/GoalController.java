@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
+import org.springframework.data.domain.Page;
+
 @RestController
 @RequestMapping("/api/goals")
 public class GoalController {
@@ -33,7 +35,21 @@ public class GoalController {
     public List<GoalResponseDTO> getAllGoals() {
         return goalService.getAllGoals();
     }
+// Get Goals with Pagination and Sorting
+@GetMapping("/page")
+public Page<GoalResponseDTO> getGoalsPaginated(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "targetDate") String sortBy,
+        @RequestParam(defaultValue = "asc") String direction) {
 
+    return goalService.getGoalsPaginated(
+            page,
+            size,
+            sortBy,
+            direction
+    );
+}
     // Get Goal By Id
     @GetMapping("/{id}")
     public GoalResponseDTO getGoalById(@PathVariable Long id) {

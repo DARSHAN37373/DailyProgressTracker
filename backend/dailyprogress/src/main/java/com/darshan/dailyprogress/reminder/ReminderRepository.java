@@ -7,11 +7,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 public interface ReminderRepository extends JpaRepository<Reminder, Long> {
 
     List<Reminder> findByUser(User user);
 
     List<Reminder> findByUserAndStatus(User user, ReminderStatus status);
+
+    Page<Reminder> findByUser(User user, Pageable pageable);
 
     List<Reminder> findByReminderDateAndReminderTimeLessThanEqualAndStatus(
         LocalDate reminderDate,

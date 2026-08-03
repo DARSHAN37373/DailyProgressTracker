@@ -15,6 +15,11 @@ import com.darshan.dailyprogress.exception.ResourceNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 @Service
 public class PlannerTaskService {
 
@@ -76,6 +81,32 @@ public PlannerTaskResponseDTO createPlannerTask(PlannerTaskRequestDTO request) {
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    // Get Planner Tasks with Pagination and Sorting
+public Page<PlannerTaskResponseDTO> getPlannerTasksPaginated(
+        int page,
+        int size,
+        String sortBy,
+        String direction) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    return plannerTaskRepository.findByUser(user, pageable)
+            .map(this::convertToResponseDTO);
+}
 
     // Get Planner Task By Id
     public PlannerTaskResponseDTO getPlannerTaskById(Long id) {

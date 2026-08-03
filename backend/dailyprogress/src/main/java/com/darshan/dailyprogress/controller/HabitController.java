@@ -6,6 +6,8 @@ import com.darshan.dailyprogress.service.HabitService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 @RestController
@@ -32,6 +34,22 @@ public class HabitController {
 
         return habitService.getAllHabits();
     }
+
+    // Get Habits with Pagination and Sorting
+@GetMapping("/page")
+public Page<HabitResponseDTO> getHabitsPaginated(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "createdDate") String sortBy,
+        @RequestParam(defaultValue = "desc") String direction) {
+
+    return habitService.getHabitsPaginated(
+            page,
+            size,
+            sortBy,
+            direction
+    );
+}
 
     // Get Habit By Id
     @GetMapping("/{id}")

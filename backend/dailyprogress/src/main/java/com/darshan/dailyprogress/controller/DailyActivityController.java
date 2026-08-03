@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 @RestController
 @RequestMapping("/api/activities")
 public class DailyActivityController {
@@ -32,6 +34,22 @@ public class DailyActivityController {
 
         return dailyActivityService.getAllActivities();
     }
+
+    // Get Activities with Pagination and Sorting
+@GetMapping("/page")
+public Page<DailyActivityResponseDTO> getActivitiesPaginated(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "activityDate") String sortBy,
+        @RequestParam(defaultValue = "desc") String direction) {
+
+    return dailyActivityService.getActivitiesPaginated(
+            page,
+            size,
+            sortBy,
+            direction
+    );
+}
 
     // Get Activity By Id
     @GetMapping("/{id}")
