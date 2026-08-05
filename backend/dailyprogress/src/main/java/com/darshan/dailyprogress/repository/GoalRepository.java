@@ -18,6 +18,19 @@ public interface GoalRepository extends JpaRepository<Goal, Long> {
 
     Page<Goal> findByUser(User user, Pageable pageable);
 
+    List<Goal> findByUserAndStatus(User user, GoalStatus status);
+
+    List<Goal> findByUserAndTitleContainingIgnoreCase(
+        User user,
+        String keyword
+);
+
+    Page<Goal> findByUserAndStatusAndTitleContainingIgnoreCase(
+        User user,
+        GoalStatus status,
+        String keyword,
+        Pageable pageable
+);
     Optional<Goal> findByIdAndUser(Long id, User user);
 
     long countByUser(User user);

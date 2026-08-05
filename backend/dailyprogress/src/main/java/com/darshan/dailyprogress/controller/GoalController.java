@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 
 import org.springframework.data.domain.Page;
 
+import com.darshan.dailyprogress.entity.GoalStatus;
+
 @RestController
 @RequestMapping("/api/goals")
 public class GoalController {
@@ -35,6 +37,43 @@ public class GoalController {
     public List<GoalResponseDTO> getAllGoals() {
         return goalService.getAllGoals();
     }
+
+    // Filter Goals By Status
+@GetMapping("/search")
+public List<GoalResponseDTO> getGoalsByStatus(
+        @RequestParam GoalStatus status) {
+
+    return goalService.getGoalsByStatus(status);
+}
+
+    // Search Goals By Title
+@GetMapping("/search/title")
+public List<GoalResponseDTO> getGoalsByTitle(
+        @RequestParam String keyword) {
+
+    return goalService.getGoalsByTitle(keyword);
+}
+
+// Filter Goals by Status and Title with Pagination and Sorting
+@GetMapping("/filter")
+public Page<GoalResponseDTO> filterGoals(
+        @RequestParam GoalStatus status,
+        @RequestParam String keyword,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "targetDate") String sortBy,
+        @RequestParam(defaultValue = "asc") String direction) {
+
+    return goalService.filterGoals(
+            status,
+            keyword,
+            page,
+            size,
+            sortBy,
+            direction
+    );
+}
+
 // Get Goals with Pagination and Sorting
 @GetMapping("/page")
 public Page<GoalResponseDTO> getGoalsPaginated(

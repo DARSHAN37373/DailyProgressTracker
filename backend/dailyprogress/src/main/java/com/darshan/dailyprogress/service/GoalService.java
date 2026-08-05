@@ -23,6 +23,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.darshan.dailyprogress.entity.GoalStatus;
+
 @Service
 public class GoalService {
 
@@ -78,6 +80,77 @@ public GoalResponseDTO createGoal(GoalRequestDTO request) {
             .stream()
             .map(this::convertToResponseDTO)
             .collect(Collectors.toList());
+}
+
+// Get Goals By Status
+public List<GoalResponseDTO> getGoalsByStatus(GoalStatus status) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    return goalRepository.findByUserAndStatus(user, status)
+            .stream()
+            .map(this::convertToResponseDTO)
+            .collect(Collectors.toList());
+}
+
+// Search Goals By Title
+public List<GoalResponseDTO> getGoalsByTitle(String keyword) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    return goalRepository
+            .findByUserAndTitleContainingIgnoreCase(user, keyword)
+            .stream()
+            .map(this::convertToResponseDTO)
+            .collect(Collectors.toList());
+}
+
+        // Filter Goals by Status and Title with Pagination and Sorting
+public Page<GoalResponseDTO> filterGoals(
+        GoalStatus status,
+        String keyword,
+        int page,
+        int size,
+        String sortBy,
+        String direction) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    return goalRepository
+            .findByUserAndStatusAndTitleContainingIgnoreCase(
+                    user,
+                    status,
+                    keyword,
+                    pageable
+            )
+            .map(this::convertToResponseDTO);
 }
 
 public GoalResponseDTO getGoalById(Long id) {

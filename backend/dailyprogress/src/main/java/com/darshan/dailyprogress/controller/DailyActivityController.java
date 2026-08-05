@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import com.darshan.dailyprogress.entity.ActivityStatus;
 @RestController
 @RequestMapping("/api/activities")
 public class DailyActivityController {
@@ -35,6 +36,44 @@ public class DailyActivityController {
         return dailyActivityService.getAllActivities();
     }
 
+        // Filter Activities By Status
+@GetMapping("/search")
+public List<DailyActivityResponseDTO> getActivitiesByStatus(
+        @RequestParam ActivityStatus status) {
+
+    return dailyActivityService.getActivitiesByStatus(status);
+}
+
+
+// Search Activities By Title
+@GetMapping("/search/title")
+public List<DailyActivityResponseDTO> getActivitiesByTitle(
+        @RequestParam String keyword) {
+
+    return dailyActivityService.getActivitiesByTitle(keyword);
+}
+
+
+// Filter Activities by Status and Title
+// with Pagination and Sorting
+@GetMapping("/filter")
+public Page<DailyActivityResponseDTO> filterActivities(
+        @RequestParam ActivityStatus status,
+        @RequestParam String keyword,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "activityDate") String sortBy,
+        @RequestParam(defaultValue = "desc") String direction) {
+
+    return dailyActivityService.filterActivities(
+            status,
+            keyword,
+            page,
+            size,
+            sortBy,
+            direction
+    );
+}
     // Get Activities with Pagination and Sorting
 @GetMapping("/page")
 public Page<DailyActivityResponseDTO> getActivitiesPaginated(

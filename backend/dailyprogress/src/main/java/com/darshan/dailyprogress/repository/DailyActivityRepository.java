@@ -26,6 +26,26 @@ public interface DailyActivityRepository extends JpaRepository<DailyActivity, Lo
         User user,
         ActivityStatus status);
 
+        // Filter Activities by Status
+List<DailyActivity> findByUserAndStatus(
+        User user,
+        ActivityStatus status
+);
+
+// Search Activities by Title
+List<DailyActivity> findByUserAndTitleContainingIgnoreCase(
+        User user,
+        String keyword
+);
+
+// Status + Title + Pagination + Sorting
+Page<DailyActivity> findByUserAndStatusAndTitleContainingIgnoreCase(
+        User user,
+        ActivityStatus status,
+        String keyword,
+        Pageable pageable
+);
+
 
     Optional<DailyActivity> findByIdAndUser(Long id, User user);
 

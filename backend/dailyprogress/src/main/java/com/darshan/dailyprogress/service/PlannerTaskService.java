@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.darshan.dailyprogress.entity.PlannerStatus;
 @Service
 public class PlannerTaskService {
 
@@ -81,6 +82,82 @@ public PlannerTaskResponseDTO createPlannerTask(PlannerTaskRequestDTO request) {
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    // Filter Planner Tasks By Status
+public List<PlannerTaskResponseDTO> getPlannerTasksByStatus(
+        PlannerStatus status) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    return plannerTaskRepository.findByUserAndStatus(user, status)
+            .stream()
+            .map(this::convertToResponseDTO)
+            .collect(Collectors.toList());
+}
+
+
+// Search Planner Tasks By Title
+public List<PlannerTaskResponseDTO> getPlannerTasksByTitle(
+        String keyword) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    return plannerTaskRepository
+            .findByUserAndTitleContainingIgnoreCase(user, keyword)
+            .stream()
+            .map(this::convertToResponseDTO)
+            .collect(Collectors.toList());
+}
+
+
+// Filter Planner Tasks by Status and Title
+// with Pagination and Sorting
+public Page<PlannerTaskResponseDTO> filterPlannerTasks(
+        PlannerStatus status,
+        String keyword,
+        int page,
+        int size,
+        String sortBy,
+        String direction) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    return plannerTaskRepository
+            .findByUserAndStatusAndTitleContainingIgnoreCase(
+                    user,
+                    status,
+                    keyword,
+                    pageable
+            )
+            .map(this::convertToResponseDTO);
+}
 
     // Get Planner Tasks with Pagination and Sorting
 public Page<PlannerTaskResponseDTO> getPlannerTasksPaginated(

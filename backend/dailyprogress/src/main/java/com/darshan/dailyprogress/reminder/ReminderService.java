@@ -56,6 +56,61 @@ public class ReminderService {
                 .collect(Collectors.toList());
     }
 
+    // Filter Reminders By Status
+public List<ReminderResponseDTO> getRemindersByStatus(
+        ReminderStatus status) {
+
+    User user = currentUserService.getCurrentUser();
+
+    return reminderRepository.findByUserAndStatus(user, status)
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
+}
+
+
+// Search Reminders By Title
+public List<ReminderResponseDTO> getRemindersByTitle(
+        String keyword) {
+
+    User user = currentUserService.getCurrentUser();
+
+    return reminderRepository
+            .findByUserAndTitleContainingIgnoreCase(user, keyword)
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
+}
+
+
+// Filter Reminders by Status and Title
+// with Pagination and Sorting
+public Page<ReminderResponseDTO> filterReminders(
+        ReminderStatus status,
+        String keyword,
+        int page,
+        int size,
+        String sortBy,
+        String direction) {
+
+    User user = currentUserService.getCurrentUser();
+
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    return reminderRepository
+            .findByUserAndStatusAndTitleContainingIgnoreCase(
+                    user,
+                    status,
+                    keyword,
+                    pageable
+            )
+            .map(this::mapToResponse);
+}
+
     // Get Reminders with Pagination and Sorting
 public Page<ReminderResponseDTO> getRemindersPaginated(
         int page,

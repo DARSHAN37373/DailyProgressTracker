@@ -17,6 +17,26 @@ public interface PlannerTaskRepository extends JpaRepository<PlannerTask, Long> 
     
     Page<PlannerTask> findByUser(User user, Pageable pageable);
 
+    // Filter Planner Tasks by Status
+List<PlannerTask> findByUserAndStatus(
+        User user,
+        PlannerStatus status
+);
+
+// Search Planner Tasks by Title
+List<PlannerTask> findByUserAndTitleContainingIgnoreCase(
+        User user,
+        String keyword
+);
+
+// Status + Title + Pagination + Sorting
+Page<PlannerTask> findByUserAndStatusAndTitleContainingIgnoreCase(
+        User user,
+        PlannerStatus status,
+        String keyword,
+        Pageable pageable
+);
+
     Optional<PlannerTask> findByIdAndUser(Long id, User user);
 
     long countByUser(User user);

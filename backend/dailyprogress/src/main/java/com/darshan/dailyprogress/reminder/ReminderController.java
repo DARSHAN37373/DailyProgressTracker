@@ -33,6 +33,45 @@ public ReminderResponseDTO createReminder(
         return reminderService.getAllReminders();
     }
 
+    // Filter Reminders By Status
+@GetMapping("/search")
+public List<ReminderResponseDTO> getRemindersByStatus(
+        @RequestParam ReminderStatus status) {
+
+    return reminderService.getRemindersByStatus(status);
+}
+
+
+// Search Reminders By Title
+@GetMapping("/search/title")
+public List<ReminderResponseDTO> getRemindersByTitle(
+        @RequestParam String keyword) {
+
+    return reminderService.getRemindersByTitle(keyword);
+}
+
+
+// Filter Reminders by Status and Title
+// with Pagination and Sorting
+@GetMapping("/filter")
+public Page<ReminderResponseDTO> filterReminders(
+        @RequestParam ReminderStatus status,
+        @RequestParam String keyword,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "reminderDate") String sortBy,
+        @RequestParam(defaultValue = "asc") String direction) {
+
+    return reminderService.filterReminders(
+            status,
+            keyword,
+            page,
+            size,
+            sortBy,
+            direction
+    );
+}
+
     @GetMapping("/{id}")
     public ReminderResponseDTO getReminderById(
             @PathVariable Long id) {

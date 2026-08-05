@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.darshan.dailyprogress.entity.HabitStatus;
 @Service
 public class HabitService {
 
@@ -80,6 +81,79 @@ public HabitResponseDTO createHabit(HabitRequestDTO request) {
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    // Filter Habits By Status
+public List<HabitResponseDTO> getHabitsByStatus(HabitStatus status) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    return habitRepository.findByUserAndStatus(user, status)
+            .stream()
+            .map(this::convertToResponseDTO)
+            .collect(Collectors.toList());
+}
+
+
+// Search Habits By Name
+public List<HabitResponseDTO> getHabitsByName(String keyword) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    return habitRepository
+            .findByUserAndNameContainingIgnoreCase(user, keyword)
+            .stream()
+            .map(this::convertToResponseDTO)
+            .collect(Collectors.toList());
+}
+
+
+// Filter Habits by Status and Name with Pagination and Sorting
+public Page<HabitResponseDTO> filterHabits(
+        HabitStatus status,
+        String keyword,
+        int page,
+        int size,
+        String sortBy,
+        String direction) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(page, size, sort);
+
+    return habitRepository
+            .findByUserAndStatusAndNameContainingIgnoreCase(
+                    user,
+                    status,
+                    keyword,
+                    pageable
+            )
+            .map(this::convertToResponseDTO);
+}
 
     // Get Habits with Pagination and Sorting
 public Page<HabitResponseDTO> getHabitsPaginated(

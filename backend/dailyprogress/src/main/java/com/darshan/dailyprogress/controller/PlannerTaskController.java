@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import com.darshan.dailyprogress.entity.PlannerStatus;
+
 @RestController
 @RequestMapping("/api/planner")
 public class PlannerTaskController {
@@ -31,6 +33,45 @@ public class PlannerTaskController {
     public List<PlannerTaskResponseDTO> getAllPlannerTasks() {
         return plannerTaskService.getAllPlannerTasks();
     }
+
+    // Filter Planner Tasks By Status
+@GetMapping("/search")
+public List<PlannerTaskResponseDTO> getPlannerTasksByStatus(
+        @RequestParam PlannerStatus status) {
+
+    return plannerTaskService.getPlannerTasksByStatus(status);
+}
+
+
+// Search Planner Tasks By Title
+@GetMapping("/search/title")
+public List<PlannerTaskResponseDTO> getPlannerTasksByTitle(
+        @RequestParam String keyword) {
+
+    return plannerTaskService.getPlannerTasksByTitle(keyword);
+}
+
+
+// Filter Planner Tasks by Status and Title
+// with Pagination and Sorting
+@GetMapping("/filter")
+public Page<PlannerTaskResponseDTO> filterPlannerTasks(
+        @RequestParam PlannerStatus status,
+        @RequestParam String keyword,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "dueDate") String sortBy,
+        @RequestParam(defaultValue = "asc") String direction) {
+
+    return plannerTaskService.filterPlannerTasks(
+            status,
+            keyword,
+            page,
+            size,
+            sortBy,
+            direction
+    );
+}
 
     // Get Planner Tasks with Pagination and Sorting
 @GetMapping("/page")

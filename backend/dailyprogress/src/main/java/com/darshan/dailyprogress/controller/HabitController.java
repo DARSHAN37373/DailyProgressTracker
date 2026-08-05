@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+import com.darshan.dailyprogress.entity.HabitStatus;
 @RestController
 @RequestMapping("/api/habits")
 public class HabitController {
@@ -35,6 +36,43 @@ public class HabitController {
         return habitService.getAllHabits();
     }
 
+        // Filter Habits By Status
+@GetMapping("/search")
+public List<HabitResponseDTO> getHabitsByStatus(
+        @RequestParam HabitStatus status) {
+
+    return habitService.getHabitsByStatus(status);
+}
+
+
+// Search Habits By Name
+@GetMapping("/search/name")
+public List<HabitResponseDTO> getHabitsByName(
+        @RequestParam String keyword) {
+
+    return habitService.getHabitsByName(keyword);
+}
+
+
+// Filter Habits by Status and Name with Pagination and Sorting
+@GetMapping("/filter")
+public Page<HabitResponseDTO> filterHabits(
+        @RequestParam HabitStatus status,
+        @RequestParam String keyword,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "createdDate") String sortBy,
+        @RequestParam(defaultValue = "desc") String direction) {
+
+    return habitService.filterHabits(
+            status,
+            keyword,
+            page,
+            size,
+            sortBy,
+            direction
+    );
+}
     // Get Habits with Pagination and Sorting
 @GetMapping("/page")
 public Page<HabitResponseDTO> getHabitsPaginated(

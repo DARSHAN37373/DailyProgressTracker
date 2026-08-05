@@ -16,6 +16,20 @@ public interface ReminderRepository extends JpaRepository<Reminder, Long> {
 
     List<Reminder> findByUserAndStatus(User user, ReminderStatus status);
 
+    // Search Reminders by Title
+List<Reminder> findByUserAndTitleContainingIgnoreCase(
+        User user,
+        String keyword
+);
+
+// Status + Title + Pagination + Sorting
+Page<Reminder> findByUserAndStatusAndTitleContainingIgnoreCase(
+        User user,
+        ReminderStatus status,
+        String keyword,
+        Pageable pageable
+);
+
     Page<Reminder> findByUser(User user, Pageable pageable);
 
     List<Reminder> findByReminderDateAndReminderTimeLessThanEqualAndStatus(
