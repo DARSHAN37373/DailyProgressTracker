@@ -106,6 +106,14 @@ public Page<HabitResponseDTO> getHabitsPaginated(
         return habitService.updateHabit(id, request);
     }
 
+    // Complete Habit for Today
+@PatchMapping("/{id}/complete")
+public HabitResponseDTO completeHabit(
+        @PathVariable Long id) {
+
+    return habitService.completeHabit(id);
+}
+
     // Delete Habit
     @DeleteMapping("/{id}")
     public String deleteHabit(@PathVariable Long id) {

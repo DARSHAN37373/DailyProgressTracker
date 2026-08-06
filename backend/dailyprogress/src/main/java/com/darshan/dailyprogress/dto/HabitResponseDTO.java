@@ -17,6 +17,7 @@ public class HabitResponseDTO {
     private Integer currentStreak;
     private Integer longestStreak;
     private LocalDate createdDate;
+    private LocalDate lastCompletedDate;
 
     public HabitResponseDTO() {
     }
@@ -99,5 +100,13 @@ public class HabitResponseDTO {
 
     public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public LocalDate getLastCompletedDate() {
+        return lastCompletedDate;
+    }
+
+    public void setLastCompletedDate(LocalDate lastCompletedDate) {
+        this.lastCompletedDate = lastCompletedDate;
     }
 }

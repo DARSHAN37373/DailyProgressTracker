@@ -21,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.darshan.dailyprogress.entity.HabitStatus;
+
+import com.darshan.dailyprogress.exception.HabitAlreadyCompletedException;
 @Service
 public class HabitService {
 
@@ -224,6 +226,87 @@ public Page<HabitResponseDTO> getHabitsPaginated(
         return convertToResponseDTO(updatedHabit);
     }
 
+    // Complete Habit for Today
+public HabitResponseDTO completeHabit(Long id) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    Habit habit = habitRepository.findByIdAndUser(id, user)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("Habit not found"));
+
+     // Prevent completion of inactive habits
+if (habit.getStatus() != HabitStatus.ACTIVE) {
+    throw new HabitAlreadyCompletedException(
+            "Only active habits can be completed"
+    );
+}
+
+    LocalDate today = LocalDate.now();
+    LocalDate lastCompletedDate = habit.getLastCompletedDate();
+
+    // Prevent duplicate completion on the same day
+    if (lastCompletedDate != null &&
+            lastCompletedDate.equals(today)) {
+
+        throw new HabitAlreadyCompletedException(
+                "Habit already completed today"
+        );
+    }
+
+    // Update total completed count
+    int completedCount =
+            habit.getCompletedCount() == null
+                    ? 0
+                    : habit.getCompletedCount();
+
+    habit.setCompletedCount(completedCount + 1);
+
+    // Calculate current streak
+    int currentStreak =
+            habit.getCurrentStreak() == null
+                    ? 0
+                    : habit.getCurrentStreak();
+
+    if (lastCompletedDate != null &&
+            lastCompletedDate.equals(today.minusDays(1))) {
+
+        // Completed yesterday -> continue streak
+        currentStreak++;
+
+    } else {
+
+        // First completion or streak was broken
+        currentStreak = 1;
+    }
+
+    habit.setCurrentStreak(currentStreak);
+
+    // Update longest streak
+    int longestStreak =
+            habit.getLongestStreak() == null
+                    ? 0
+                    : habit.getLongestStreak();
+
+    if (currentStreak > longestStreak) {
+        habit.setLongestStreak(currentStreak);
+    }
+
+    // Store today's completion date
+    habit.setLastCompletedDate(today);
+
+    Habit updatedHabit = habitRepository.save(habit);
+
+    return convertToResponseDTO(updatedHabit);
+}
+
     // Delete Habit
     public void deleteHabit(Long id) {
 
@@ -256,6 +339,7 @@ public Page<HabitResponseDTO> getHabitsPaginated(
         response.setCurrentStreak(habit.getCurrentStreak());
         response.setLongestStreak(habit.getLongestStreak());
         response.setCreatedDate(habit.getCreatedDate());
+        response.setLastCompletedDate(habit.getLastCompletedDate());
 
         return response;
     }

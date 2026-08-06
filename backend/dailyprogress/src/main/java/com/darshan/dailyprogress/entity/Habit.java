@@ -15,6 +15,10 @@ public class Habit {
 
     private String description;
 
+    private LocalDate lastCompletedDate;
+
+
+
     @Enumerated(EnumType.STRING)
     private HabitFrequency frequency;
 
@@ -125,4 +129,11 @@ public class Habit {
     public void setUser(User user) {
         this.user = user;
     }
+        public LocalDate getLastCompletedDate() {
+    return lastCompletedDate;
+}
+
+public void setLastCompletedDate(LocalDate lastCompletedDate) {
+    this.lastCompletedDate = lastCompletedDate;
+}
 }
