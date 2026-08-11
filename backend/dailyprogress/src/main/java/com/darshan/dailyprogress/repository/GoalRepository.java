@@ -31,6 +31,7 @@ public interface GoalRepository extends JpaRepository<Goal, Long> {
         String keyword,
         Pageable pageable
 );
+
     Optional<Goal> findByIdAndUser(Long id, User user);
 
     long countByUser(User user);

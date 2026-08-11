@@ -10,8 +10,26 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.darshan.dailyprogress.exception.PlannerTaskAlreadyCompletedException;
+import com.darshan.dailyprogress.exception.ResourceNotFoundException;
+import com.darshan.dailyprogress.exception.UnauthorizedException;
+import com.darshan.dailyprogress.exception.HabitAlreadyCompletedException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(PlannerTaskAlreadyCompletedException.class)
+    public ResponseEntity<Map<String, Object>> handlePlannerTaskConflict(
+            PlannerTaskAlreadyCompletedException ex) {
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.CONFLICT.value());
+        response.put("error", "Conflict");
+        response.put("message", ex.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(
@@ -58,17 +76,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HabitAlreadyCompletedException.class)
-public ResponseEntity<Map<String, Object>> handleHabitAlreadyCompleted(
-        HabitAlreadyCompletedException ex) {
+    public ResponseEntity<Map<String, Object>> handleHabitAlreadyCompleted(
+            HabitAlreadyCompletedException ex) {
 
-    Map<String, Object> response = new HashMap<>();
-    response.put("timestamp", LocalDateTime.now());
-    response.put("status", HttpStatus.CONFLICT.value());
-    response.put("error", "Conflict");
-    response.put("message", ex.getMessage());
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", HttpStatus.CONFLICT.value());
+        response.put("error", "Conflict");
+        response.put("message", ex.getMessage());
 
-    return new ResponseEntity<>(response, HttpStatus.CONFLICT);
-}
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralException(

@@ -6,6 +6,8 @@ import com.darshan.dailyprogress.service.PlannerTaskService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import com.darshan.dailyprogress.dto.ActualHoursRequestDTO;
+
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -89,6 +91,26 @@ public Page<PlannerTaskResponseDTO> getPlannerTasksPaginated(
     );
 }
 
+    // Complete Planner Task
+@PatchMapping("/{id}/complete")
+public PlannerTaskResponseDTO completePlannerTask(
+        @PathVariable Long id) {
+
+    return plannerTaskService.completePlannerTask(id);
+}
+// Update Actual Hours
+@PatchMapping("/{id}/hours")
+public PlannerTaskResponseDTO updateActualHours(
+        @PathVariable Long id,
+        @Valid @RequestBody ActualHoursRequestDTO request) {
+
+    return plannerTaskService.updateActualHours(
+            id,
+            request.getActualHours()
+    );
+}
+
+    
     @GetMapping("/{id}")
     public PlannerTaskResponseDTO getPlannerTaskById(@PathVariable Long id) {
         return plannerTaskService.getPlannerTaskById(id);

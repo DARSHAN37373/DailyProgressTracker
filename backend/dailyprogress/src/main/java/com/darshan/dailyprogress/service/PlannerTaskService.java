@@ -10,7 +10,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.darshan.dailyprogress.exception.PlannerTaskAlreadyCompletedException;
 import com.darshan.dailyprogress.exception.ResourceNotFoundException;
+
+import com.darshan.dailyprogress.dto.ActualHoursRequestDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -234,6 +237,76 @@ public Page<PlannerTaskResponseDTO> getPlannerTasksPaginated(
 
         return convertToResponseDTO(updatedTask);
     }
+
+
+    // Complete Planner Task
+public PlannerTaskResponseDTO completePlannerTask(Long id) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    PlannerTask plannerTask =
+            plannerTaskRepository.findByIdAndUser(id, user)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Planner Task not found"));
+
+    if (plannerTask.getStatus() == PlannerStatus.COMPLETED) {
+        throw new PlannerTaskAlreadyCompletedException(
+                "Planner task already completed");
+    }
+
+    if (plannerTask.getStatus() == PlannerStatus.POSTPONED ||
+        plannerTask.getStatus() == PlannerStatus.CANCELLED) {
+
+        throw new PlannerTaskAlreadyCompletedException(
+                "Cannot complete a postponed or cancelled task");
+    }
+
+    plannerTask.setStatus(PlannerStatus.COMPLETED);
+
+    PlannerTask completedTask =
+            plannerTaskRepository.save(plannerTask);
+
+    return convertToResponseDTO(completedTask);
+}
+
+        // Update Actual Hours
+public PlannerTaskResponseDTO updateActualHours(
+        Long id,
+        Integer actualHours) {
+
+    Authentication authentication =
+            SecurityContextHolder.getContext().getAuthentication();
+
+    String email = authentication.getName();
+
+    User user = userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
+
+    PlannerTask plannerTask =
+            plannerTaskRepository.findByIdAndUser(id, user)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Planner Task not found"));
+
+    if (actualHours < 0) {
+        throw new IllegalArgumentException(
+                "Actual hours cannot be negative");
+    }
+
+    plannerTask.setActualHours(actualHours);
+
+    PlannerTask updatedTask =
+            plannerTaskRepository.save(plannerTask);
+
+    return convertToResponseDTO(updatedTask);
+}
 
     // Delete Planner Task
     public void deletePlannerTask(Long id) {
