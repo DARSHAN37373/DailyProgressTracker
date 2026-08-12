@@ -55,4 +55,10 @@ Page<DailyActivity> findByUserAndStatusAndTitleContainingIgnoreCase(
         User user,
         LocalDate startDate,
         LocalDate endDate);
+
+        long countByUserAndStatusAndActivityDateBetween(
+        User user,
+        ActivityStatus status,
+        LocalDate startDate,
+        LocalDate endDate);
 }

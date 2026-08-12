@@ -8,6 +8,7 @@ public class DashboardResponseDTO {
 
     // Activities
     private Long totalActivities;
+    private Long todayActivities;
 
     // Habits
     private Long totalHabits;
@@ -18,8 +19,20 @@ public class DashboardResponseDTO {
     private Long completedPlannerTasks;
     private Long pendingPlannerTasks;
 
+    private Long totalEstimatedHours;
+    private Long totalActualHours;
+
+    private Long todayCompletedActivities;
+
+    private Long todayPlannerTasks;
+    private Long todayCompletedPlannerTasks;
+
+    private Double todayProgressPercentage;
+
     public DashboardResponseDTO() {
     }
+
+    // Goals
 
     public Long getTotalGoals() {
         return totalGoals;
@@ -37,6 +50,8 @@ public class DashboardResponseDTO {
         this.completedGoals = completedGoals;
     }
 
+    // Activities
+
     public Long getTotalActivities() {
         return totalActivities;
     }
@@ -44,6 +59,16 @@ public class DashboardResponseDTO {
     public void setTotalActivities(Long totalActivities) {
         this.totalActivities = totalActivities;
     }
+
+    public Long getTodayActivities() {
+        return todayActivities;
+    }
+
+    public void setTodayActivities(Long todayActivities) {
+        this.todayActivities = todayActivities;
+    }
+
+    // Habits
 
     public Long getTotalHabits() {
         return totalHabits;
@@ -60,6 +85,8 @@ public class DashboardResponseDTO {
     public void setActiveHabits(Long activeHabits) {
         this.activeHabits = activeHabits;
     }
+
+    // Planner
 
     public Long getTotalPlannerTasks() {
         return totalPlannerTasks;
@@ -84,4 +111,50 @@ public class DashboardResponseDTO {
     public void setPendingPlannerTasks(Long pendingPlannerTasks) {
         this.pendingPlannerTasks = pendingPlannerTasks;
     }
+    public Long getTotalEstimatedHours() {
+    return totalEstimatedHours;
+}
+
+public void setTotalEstimatedHours(Long totalEstimatedHours) {
+    this.totalEstimatedHours = totalEstimatedHours;
+}
+
+public Long getTotalActualHours() {
+    return totalActualHours;
+}
+
+public void setTotalActualHours(Long totalActualHours) {
+    this.totalActualHours = totalActualHours;
+}
+public Long getTodayCompletedActivities() {
+    return todayCompletedActivities;
+}
+
+public void setTodayCompletedActivities(Long todayCompletedActivities) {
+    this.todayCompletedActivities = todayCompletedActivities;
+}
+
+public Long getTodayPlannerTasks() {
+    return todayPlannerTasks;
+}
+
+public void setTodayPlannerTasks(Long todayPlannerTasks) {
+    this.todayPlannerTasks = todayPlannerTasks;
+}
+
+public Long getTodayCompletedPlannerTasks() {
+    return todayCompletedPlannerTasks;
+}
+
+public void setTodayCompletedPlannerTasks(Long todayCompletedPlannerTasks) {
+    this.todayCompletedPlannerTasks = todayCompletedPlannerTasks;
+}
+
+public Double getTodayProgressPercentage() {
+    return todayProgressPercentage;
+}
+
+public void setTodayProgressPercentage(Double todayProgressPercentage) {
+    this.todayProgressPercentage = todayProgressPercentage;
+}
 }
